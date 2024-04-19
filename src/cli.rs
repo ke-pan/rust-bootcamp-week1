@@ -20,6 +20,16 @@ pub enum SubCommand {
         #[arg(long, value_parser = parse_format, default_value = "json")]
         format: OutputFormat,
     },
+    GenPass {
+        #[arg(short, long, default_value_t = 14)]
+        length: u8,
+        #[arg(short, long, default_value_t = false)]
+        uppercase: bool,
+        #[arg(short, long, default_value_t = false)]
+        symbol: bool,
+        #[arg(short, long, default_value_t = false)]
+        number: bool,
+    },
 }
 
 #[derive(Debug, Clone, Copy)]

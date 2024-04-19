@@ -2,7 +2,7 @@ use crate::cli::OutputFormat;
 use csv::Reader;
 use std::fs;
 
-pub fn process(input: &str, output: &str, format: OutputFormat) -> anyhow::Result<()> {
+pub fn process_csv(input: &str, output: &str, format: OutputFormat) -> anyhow::Result<()> {
     let mut reader = Reader::from_path(input)?;
     let mut ret = Vec::with_capacity(128);
     let headers = reader.headers()?.clone();
