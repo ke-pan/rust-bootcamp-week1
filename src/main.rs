@@ -5,7 +5,18 @@ use rcli::{process, Opts, SubCommand};
 fn main() -> anyhow::Result<()> {
     let opts = Opts::parse();
     match opts.subcmd {
-        SubCommand::Csv { input, output, .. } => process(&input, &output)?,
+        SubCommand::Csv {
+            input,
+            output,
+            format,
+        } => {
+            if let Some(output) = output {
+                process(&input, &output, format)?;
+            } else {
+                let output = format!("output.{}", format);
+                process(&input, &output, format)?;
+            }
+        }
     }
     Ok(())
 }

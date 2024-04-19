@@ -1,29 +1,24 @@
+use crate::cli::OutputFormat;
 use csv::Reader;
-use serde::{Deserialize, Serialize};
 use std::fs;
 
-#[derive(Debug, Deserialize, Serialize)]
-struct Player {
-    #[serde(rename = "Name")]
-    name: String,
-    #[serde(rename = "Position")]
-    position: String,
-    #[serde(rename = "DOB")]
-    dob: String,
-    #[serde(rename = "Nationality")]
-    nationality: String,
-    #[serde(rename = "Kit Number")]
-    kit: u8,
-}
-
-pub fn process(input: &str, output: &str) -> anyhow::Result<()> {
+pub fn process(input: &str, output: &str, format: OutputFormat) -> anyhow::Result<()> {
     let mut reader = Reader::from_path(input)?;
     let mut ret = Vec::with_capacity(128);
-    for result in reader.deserialize() {
-        let record: Player = result?;
-        ret.push(record);
+    let headers = reader.headers()?.clone();
+    for result in reader.records() {
+        let record = result?;
+        ret.push(
+            headers
+                .iter()
+                .zip(record.iter())
+                .collect::<serde_json::Value>(),
+        );
     }
-    let content = serde_json::to_string_pretty(&ret)?;
+    let content = match format {
+        OutputFormat::Json => serde_json::to_string_pretty(&ret)?,
+        OutputFormat::Yaml => serde_yaml::to_string(&ret)?,
+    };
     fs::write(output, content)?;
     Ok(())
 }
