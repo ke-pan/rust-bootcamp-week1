@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use clap::{Args, Subcommand};
 
-use super::validate_input_file;
+use super::validate_file;
 
 #[derive(Subcommand, Debug)]
 pub enum B64Command {
@@ -14,7 +14,7 @@ pub enum B64Command {
 
 #[derive(Debug, Args)]
 pub struct EncodeCommand {
-    #[arg(short, long, value_parser=validate_input_file, default_value = "-")]
+    #[arg(short, long, value_parser=validate_file, default_value = "-")]
     pub input: String,
     #[arg(short, long, value_parser=parse_format, default_value = "standard")]
     pub format: Base64Format,
@@ -22,7 +22,7 @@ pub struct EncodeCommand {
 
 #[derive(Debug, Args)]
 pub struct DecodeCommand {
-    #[arg(short, long, value_parser=validate_input_file, default_value = "-")]
+    #[arg(short, long, value_parser=validate_file, default_value = "-")]
     pub input: String,
     #[arg(short, long, value_parser=parse_format, default_value = "standard")]
     pub format: Base64Format,

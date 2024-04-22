@@ -2,11 +2,11 @@ use clap::Args;
 use std::fmt::Display;
 use std::str::FromStr;
 
-use super::validate_input_file;
+use super::validate_file;
 
 #[derive(Debug, Args)]
 pub struct CsvCommand {
-    #[arg(short, long, value_parser = validate_input_file)]
+    #[arg(short, long, value_parser = validate_file)]
     pub input: String,
     #[arg(short, long)]
     pub output: Option<String>,
