@@ -1,17 +1,29 @@
+use crate::process_csv;
 use clap::Args;
 use std::fmt::Display;
 use std::str::FromStr;
 
-use super::validate_file;
+use super::{validate_file, Executor};
 
 #[derive(Debug, Args)]
-pub struct CsvCommand {
+pub struct CsvArgs {
     #[arg(short, long, value_parser = validate_file)]
     pub input: String,
     #[arg(short, long)]
     pub output: Option<String>,
     #[arg(long, value_parser = parse_format, default_value = "json")]
     pub format: OutputFormat,
+}
+
+impl Executor for CsvArgs {
+    async fn execute(&self) -> anyhow::Result<()> {
+        if let Some(output) = &self.output {
+            process_csv(&self.input, output, self.format)
+        } else {
+            let output = format!("output.{}", self.format);
+            process_csv(&self.input, &output, self.format)
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy)]

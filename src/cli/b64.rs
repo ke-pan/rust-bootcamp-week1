@@ -1,31 +1,48 @@
+use super::{validate_file, Executor};
+use crate::{process_base64_decode, process_base64_encode};
+use clap::{Args, Subcommand};
+use enum_dispatch::enum_dispatch;
 use std::str::FromStr;
 
-use clap::{Args, Subcommand};
-
-use super::validate_file;
-
 #[derive(Subcommand, Debug)]
+#[enum_dispatch(Executor)]
 pub enum B64Command {
     #[command(name = "encode", about = "Base64 encode")]
-    Encode(EncodeCommand),
+    Encode(EncodeArgs),
     #[command(name = "decode", about = "Base64 decode")]
-    Decode(DecodeCommand),
+    Decode(DecodeArgs),
 }
 
 #[derive(Debug, Args)]
-pub struct EncodeCommand {
+pub struct EncodeArgs {
     #[arg(short, long, value_parser=validate_file, default_value = "-")]
     pub input: String,
     #[arg(short, long, value_parser=parse_format, default_value = "standard")]
     pub format: Base64Format,
 }
 
+impl Executor for EncodeArgs {
+    async fn execute(&self) -> anyhow::Result<()> {
+        let encoded = process_base64_encode(&self.input, self.format)?;
+        print!("{}", encoded);
+        Ok(())
+    }
+}
+
 #[derive(Debug, Args)]
-pub struct DecodeCommand {
+pub struct DecodeArgs {
     #[arg(short, long, value_parser=validate_file, default_value = "-")]
     pub input: String,
     #[arg(short, long, value_parser=parse_format, default_value = "standard")]
     pub format: Base64Format,
+}
+
+impl Executor for DecodeArgs {
+    async fn execute(&self) -> anyhow::Result<()> {
+        let decoded = process_base64_decode(&self.input, self.format)?;
+        print!("{}", String::from_utf8_lossy(&decoded));
+        Ok(())
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
