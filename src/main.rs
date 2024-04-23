@@ -1,8 +1,8 @@
 use anyhow::Ok;
 use clap::Parser;
 use rcli::{
-    generate, genpass, process_base64_decode, process_base64_encode, process_csv, sign, verify,
-    B64Command, Opts, SubCommand, TextCommand,
+    decrypt, encrypt, generate, genpass, process_base64_decode, process_base64_encode, process_csv,
+    sign, verify, B64Command, Opts, SubCommand, TextCommand,
 };
 // rcli csv -i input.csv -o output.json --header --pretty -d ','
 
@@ -46,6 +46,16 @@ fn main() -> anyhow::Result<()> {
             }
             TextCommand::Generate => {
                 print!("{}", generate());
+                Ok(())
+            }
+            TextCommand::Encrypt(cmd) => {
+                let encrypted = encrypt(&cmd.input, &cmd.key)?;
+                print!("{}", encrypted);
+                Ok(())
+            }
+            TextCommand::Decrypt(cmd) => {
+                let decrypted = decrypt(&cmd.input, &cmd.key)?;
+                print!("{}", String::from_utf8_lossy(&decrypted));
                 Ok(())
             }
         },

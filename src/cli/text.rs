@@ -12,6 +12,10 @@ pub enum TextCommand {
     Verify(VerifyArgs),
     #[command(name = "generate", about = "Generate a new key pair")]
     Generate,
+    #[command(name = "encrypt", about = "Encrypt the message")]
+    Encrypt(EncryptArgs),
+    #[command(name = "decrypt", about = "Decrypt the message")]
+    Decrypt(DecryptArgs),
 }
 
 #[derive(Debug, Args)]
@@ -32,6 +36,22 @@ pub struct VerifyArgs {
     pub signature: String,
     #[arg(short, long, value_parser=parse_format, default_value = "blake")]
     pub format: SignatureFormat,
+    #[arg(short, long, value_parser=validate_file)]
+    pub key: String,
+}
+
+#[derive(Debug, Args)]
+pub struct EncryptArgs {
+    #[arg(short, long, value_parser=validate_file, default_value = "-")]
+    pub input: String,
+    #[arg(short, long, value_parser=validate_file)]
+    pub key: String,
+}
+
+#[derive(Debug, Args)]
+pub struct DecryptArgs {
+    #[arg(short, long, value_parser=validate_file, default_value = "-")]
+    pub input: String,
     #[arg(short, long, value_parser=validate_file)]
     pub key: String,
 }
