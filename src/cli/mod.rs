@@ -1,11 +1,13 @@
 mod b64;
 mod csv;
 mod genpass;
+mod http;
 mod text;
 pub use self::b64::*;
 use self::csv::CsvArgs;
 pub use self::csv::OutputFormat;
 use self::genpass::GenPassArgs;
+use self::http::HttpArgs;
 pub use self::text::*;
 use clap::{Parser, Subcommand};
 use enum_dispatch::enum_dispatch;
@@ -29,6 +31,8 @@ pub enum SubCommand {
     Base64(B64Command),
     #[command(name = "text", about = "Sign text", subcommand)]
     Text(TextCommand),
+    #[command(name = "http", about = "Serve local files and dir over HTTP")]
+    Http(HttpArgs),
 }
 
 pub fn validate_file(filename: &str) -> Result<String, &'static str> {

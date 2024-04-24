@@ -1,5 +1,6 @@
 mod b64;
 mod csv;
+mod http;
 mod passgen;
 mod text;
 
@@ -7,6 +8,7 @@ use std::{fs, io, io::Read};
 
 pub use b64::*;
 pub use csv::process_csv;
+pub use http::serve;
 pub use passgen::genpass;
 pub use text::*;
 
