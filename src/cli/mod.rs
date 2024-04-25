@@ -2,7 +2,9 @@ mod b64;
 mod csv;
 mod genpass;
 mod http;
+mod jwt;
 mod text;
+
 pub use self::b64::*;
 use self::csv::CsvArgs;
 pub use self::csv::OutputFormat;
@@ -11,6 +13,7 @@ use self::http::HttpArgs;
 pub use self::text::*;
 use clap::{Parser, Subcommand};
 use enum_dispatch::enum_dispatch;
+use jwt::{JwtCommand, JwtDecodeArgs, JwtEncodeArgs};
 use std::path::Path;
 
 #[derive(Debug, Parser)]
@@ -33,6 +36,8 @@ pub enum SubCommand {
     Text(TextCommand),
     #[command(name = "http", about = "Serve local files and dir over HTTP")]
     Http(HttpArgs),
+    #[command(name = "jwt", about = "jwt encode/decode", subcommand)]
+    Jwt(JwtCommand),
 }
 
 pub fn validate_file(filename: &str) -> Result<String, &'static str> {
